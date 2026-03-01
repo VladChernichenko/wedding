@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useI18n } from '../contexts/I18nContext';
 
 export default function Invitation({ user }) {
@@ -17,6 +18,11 @@ export default function Invitation({ user }) {
   return (
     <main className="invitation">
       {user && welcomeMessage && <h2 className="welcome">{welcomeMessage}</h2>}
+      {user?.admin && (
+        <p className="admin-link">
+          <Link to="/admin">{t('welcome.adminLink')}</Link>
+        </p>
+      )}
       <p className="intro">{t('intro')}</p>
       <h1 className="names">{t('names')}</h1>
       <p className="request">

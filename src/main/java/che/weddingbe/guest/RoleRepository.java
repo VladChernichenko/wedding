@@ -3,7 +3,7 @@ package che.weddingbe.guest;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GuestRepository extends JpaRepository<User, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
-    Optional<User> findByUsername(String username);
+    Optional<Role> findByName(String name);
 }

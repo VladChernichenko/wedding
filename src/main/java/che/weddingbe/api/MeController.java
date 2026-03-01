@@ -24,9 +24,9 @@ public class MeController {
             return ResponseEntity.status(401).build();
         }
         return guestRepository.findByUsername(user.getUsername())
-                .map(guest -> ResponseEntity.ok(new MeResponse(guest.getUsername(), guest.getDisplayName(), guest.getPartnerName())))
+                .map(guest -> ResponseEntity.ok(new MeResponse(guest.getUsername(), guest.getDisplayName(), guest.getPartnerName(), guest.hasRole("ADMIN"))))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    public record MeResponse(String username, String displayName, String partnerName) {}
+    public record MeResponse(String username, String displayName, String partnerName, boolean admin) {}
 }

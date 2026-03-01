@@ -69,3 +69,20 @@ export async function logout() {
     window.location.href = `${BASE}/login`;
   }
 }
+
+/**
+ * Create a new guest (admin only). Returns { username, displayName, partnerName } on success.
+ */
+export async function createGuest(body) {
+  const res = await fetchWithCsrf(`${BASE}/api/admin/guests`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = new Error(res.status === 409 ? 'Username already exists' : 'Failed to create guest');
+    err.status = res.status;
+    throw err;
+  }
+  return res.json();
+}

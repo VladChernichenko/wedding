@@ -34,12 +34,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        // Skip CSRF for form login/logout so it works when frontend is proxied (e.g. Vite 5173 -> 8080)
-                        .ignoringRequestMatchers("/login", "/logout")
+                        // Skip CSRF for form login/logout and admin API so it works when frontend is proxied
+                        .ignoringRequestMatchers("/login", "/logout", "/api/admin/**")
                 )
                 .addFilterBefore(loginRequestLoggingFilter(), org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/index.html", "/assets/**", "/styles.css", "/images/**", "/api/i18n", "/api/i18n/**", "/api/me", "/error").permitAll()
+                        .requestMatchers("/", "/login", "/logout", "/admin", "/index.html", "/assets/**", "/styles.css", "/images/**", "/api/i18n", "/api/i18n/**", "/api/me", "/error").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -51,6 +52,7 @@ public class SecurityConfig {
                         .failureHandler(loginFailureHandler())
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessHandler(logoutSuccessHandler())
                 );
         return http.build();

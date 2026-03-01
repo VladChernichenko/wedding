@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SpaController {
 
-    @GetMapping(value = { "/", "/login" })
+    @GetMapping(value = { "/", "/login", "/admin" })
     public String index() {
         return "forward:/index.html";
     }

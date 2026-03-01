@@ -5,6 +5,7 @@ import { getMe } from './api/client';
 import UserBar from './components/UserBar';
 import Invitation from './pages/Invitation';
 import Login from './pages/Login';
+import Admin from './pages/Admin';
 
 function AppContent() {
   const { loading: i18nLoading } = useI18n();
@@ -31,6 +32,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={user ? <Invitation user={user} /> : <Navigate to="/login" replace />} />
           <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+          <Route path="/admin" element={user?.admin ? <Admin /> : <Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>

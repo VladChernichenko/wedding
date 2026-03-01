@@ -255,6 +255,21 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.login-success {
+  font-size: 0.85rem;
+  color: #2d6a2d;
+  margin-bottom: 0.5rem;
+}
+
+.admin-link {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.admin-link a {
+  color: var(--gold);
+}
+
 .login-box .ornament-bottom {
   margin-top: 2rem;
 }

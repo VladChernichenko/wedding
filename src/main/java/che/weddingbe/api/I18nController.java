@@ -22,7 +22,8 @@ public class I18nController {
             "intro", "names", "request", "requestLine2", "date", "venue", "rsvp",
             "welcome.alone", "welcome.withPartner",
             "userbar.loggedIn", "userbar.logout",
-            "login.title", "login.intro", "login.username", "login.password", "login.submit", "login.error"
+            "login.title", "login.intro", "login.username", "login.password", "login.submit", "login.error",
+            "admin.title", "admin.createGuest", "admin.username", "admin.password", "admin.displayName", "admin.partnerName", "admin.submit", "admin.success", "admin.error", "admin.backToInvitation", "welcome.adminLink"
     );
 
     private final MessageSource messageSource;
