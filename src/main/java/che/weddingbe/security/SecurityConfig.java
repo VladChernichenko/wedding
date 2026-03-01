@@ -34,8 +34,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        // Skip CSRF for form login/logout and admin API so it works when frontend is proxied
-                        .ignoringRequestMatchers("/login", "/logout", "/api/admin/**")
+                        // Skip CSRF for form login/logout, admin API, and me API (session cookie still required)
+                        .ignoringRequestMatchers("/login", "/logout", "/api/admin/**", "/api/me/**")
                 )
                 .addFilterBefore(loginRequestLoggingFilter(), org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth

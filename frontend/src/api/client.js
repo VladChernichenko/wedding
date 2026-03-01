@@ -50,12 +50,21 @@ export async function confirmPresence() {
  * Add a child (guest). Returns { id, name }.
  */
 export async function addChild(name) {
-  const res = await fetchWithCsrf(`${BASE}/api/me/children`, {
+  const url = `${BASE}/api/me/children`;
+  const body = JSON.stringify({ name: name.trim() });
+  console.log('[ADD_CHILD] POST', url, { name: name?.trim() });
+  const res = await fetchWithCsrf(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name.trim() }),
+    body,
   });
-  if (!res.ok) throw new Error('Failed to add child');
+  const status = res.status;
+  const ok = res.ok;
+  if (!ok) {
+    const text = await res.text();
+    console.error('[ADD_CHILD] failed:', status, res.statusText, text || '(no body)');
+    throw new Error(text || `Failed to add child (${status})`);
+  }
   return res.json();
 }
 

@@ -1,10 +1,11 @@
 package che.weddingbe.api;
 
 import che.weddingbe.guest.Child;
-import che.weddingbe.guest.ChildRepository;
 import che.weddingbe.guest.GuestRepository;
 import che.weddingbe.guest.User;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.List;
@@ -21,12 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class MeController {
 
-    private final GuestRepository guestRepository;
-    private final ChildRepository childRepository;
+    private static final Logger log = LoggerFactory.getLogger(MeController.class);
 
-    public MeController(GuestRepository guestRepository, ChildRepository childRepository) {
+    private final GuestRepository guestRepository;
+
+    public MeController(GuestRepository guestRepository) {
         this.guestRepository = guestRepository;
-        this.childRepository = childRepository;
     }
 
     @GetMapping("/me")
@@ -36,7 +37,8 @@ public class MeController {
         }
         return guestRepository.findByUsername(user.getUsername())
                 .map(guest -> {
-                    List<ChildDto> children = guest.getChildren().stream()
+                    List<Child> childList = guest.getChildren() != null ? guest.getChildren() : List.of();
+                    List<ChildDto> children = childList.stream()
                             .map(c -> new ChildDto(c.getId(), c.getName()))
                             .toList();
                     return ResponseEntity.ok(new MeResponse(
@@ -69,18 +71,32 @@ public class MeController {
     @PostMapping("/me/children")
     public ResponseEntity<ChildDto> addChild(@AuthenticationPrincipal UserDetails user,
                                              @Valid @RequestBody AddChildRequest request) {
+        log.info("[ADD_CHILD] request: username='{}', childName='{}'", user != null ? user.getUsername() : null, request != null ? request.name() : null);
         if (user == null) {
+            log.warn("[ADD_CHILD] rejected: not authenticated");
             return ResponseEntity.status(401).build();
         }
         return guestRepository.findByUsername(user.getUsername())
                 .map(guest -> {
-                    Child child = new Child();
-                    child.setUser(guest);
-                    child.setName(request.name().trim());
-                    child = childRepository.save(child);
-                    return ResponseEntity.ok(new ChildDto(child.getId(), child.getName()));
+                    try {
+                        Child child = new Child();
+                        String name = request.name().trim();
+                        child.setName(name);
+                        guest.getChildren().add(child);
+                        child.setUser(guest);
+                        guestRepository.save(guest);
+                        child = guest.getChildren().get(guest.getChildren().size() - 1);
+                        log.info("[ADD_CHILD] success: username='{}', childId={}, childName='{}'", user.getUsername(), child.getId(), child.getName());
+                        return ResponseEntity.ok(new ChildDto(child.getId(), child.getName()));
+                    } catch (Exception e) {
+                        log.error("[ADD_CHILD] failed: username='{}', childName='{}'", user.getUsername(), request.name(), e);
+                        throw e;
+                    }
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> {
+                    log.warn("[ADD_CHILD] user not found: username='{}'", user.getUsername());
+                    return ResponseEntity.notFound().build();
+                });
     }
 
     public record MeResponse(String username, String displayName, String partnerName, boolean admin,

@@ -2,6 +2,7 @@ package che.weddingbe.guest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -47,7 +48,7 @@ public class User {
     @Column(name = "presence_confirmed_at")
     private Instant presenceConfirmedAt;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Child> children = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)

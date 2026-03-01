@@ -19,6 +19,7 @@ export default function Invitation({ user, onRefreshUser }) {
   const [childName, setChildName] = useState('');
   const [addingChild, setAddingChild] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [childError, setChildError] = useState('');
 
   let welcomeMessage = '';
   if (user) {
@@ -52,11 +53,14 @@ export default function Invitation({ user, onRefreshUser }) {
   const handleAddChild = async (e) => {
     e.preventDefault();
     if (!childName.trim()) return;
+    setChildError('');
     setAddingChild(true);
     try {
       await addChild(childName);
       setChildName('');
       onRefreshUser?.();
+    } catch (err) {
+      setChildError(err.message || t('admin.error'));
     } finally {
       setAddingChild(false);
     }
@@ -116,6 +120,7 @@ export default function Invitation({ user, onRefreshUser }) {
             )}
             <form onSubmit={handleAddChild} className="rsvp-add-child">
               <label htmlFor="rsvp-child-name">{t('rsvp.childName')}</label>
+              {childError && <p className="login-error" role="alert">{childError}</p>}
               <input
                 type="text"
                 id="rsvp-child-name"
