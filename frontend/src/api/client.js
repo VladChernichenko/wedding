@@ -35,6 +35,31 @@ export async function getMe() {
 }
 
 /**
+ * Confirm presence (guest). Returns updated me response.
+ */
+export async function confirmPresence() {
+  const res = await fetchWithCsrf(`${BASE}/api/me/presence`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) throw new Error('Failed to confirm');
+  return res.json();
+}
+
+/**
+ * Add a child (guest). Returns { id, name }.
+ */
+export async function addChild(name) {
+  const res = await fetchWithCsrf(`${BASE}/api/me/children`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name.trim() }),
+  });
+  if (!res.ok) throw new Error('Failed to add child');
+  return res.json();
+}
+
+/**
  * Submit login form (application/x-www-form-urlencoded with _csrf).
  */
 export async function login(username, password) {
@@ -68,6 +93,15 @@ export async function logout() {
     // Always go to login so user is not stuck if logout request fails (e.g. CORS/network).
     window.location.href = `${BASE}/login`;
   }
+}
+
+/**
+ * List roles (admin only). Returns [{ id, name }, ...] from the roles table.
+ */
+export async function getRoles() {
+  const res = await fetch(`${BASE}/api/admin/roles`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to load roles');
+  return res.json();
 }
 
 /**

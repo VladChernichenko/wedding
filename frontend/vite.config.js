@@ -2,7 +2,23 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'redirect-wedding-to-wedding-slash',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url === '/wedding' && req.method === 'GET') {
+            res.statusCode = 302;
+            res.setHeader('Location', '/wedding/');
+            res.end();
+            return;
+          }
+          next();
+        });
+      },
+    },
+  ],
   base: '/wedding/',
   server: {
     port: 5173,

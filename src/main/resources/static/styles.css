@@ -113,6 +113,14 @@ body {
   margin-bottom: 2rem;
 }
 
+.countdown {
+  margin-top: 0.75rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: var(--gold);
+  font-weight: 500;
+}
+
 .date,
 .year {
   font-family: 'Cormorant Garamond', serif;
@@ -165,6 +173,90 @@ body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
+}
+
+.rsvp-block {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gold-light);
+}
+
+.rsvp-confirm-button {
+  display: block;
+  margin: 0 auto 1.5rem;
+  padding: 0.7rem 1.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--ivory);
+  background: var(--gold);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rsvp-confirm-button:hover:not(:disabled) {
+  background: var(--gold-light);
+  color: var(--ink);
+}
+
+.rsvp-confirm-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.rsvp-confirmed {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+.rsvp-children-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.rsvp-children-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+}
+
+.rsvp-add-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rsvp-add-child label {
+  font-size: 0.8rem;
+  width: 100%;
+}
+
+.rsvp-add-child input {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--gold-light);
+  border-radius: 4px;
+}
+
+.rsvp-add-child button {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background: var(--gold-light);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 @media (min-width: 480px) {
@@ -268,6 +360,22 @@ body {
 
 .admin-link a {
   color: var(--gold);
+}
+
+.admin-role-select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  border: 1px solid var(--gold-light);
+  border-radius: 4px;
+  background: var(--ivory);
+  cursor: pointer;
+}
+
+.admin-role-select:focus {
+  outline: none;
+  border-color: var(--gold);
 }
 
 .login-box .ornament-bottom {

@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../contexts/I18nContext';
-import { createGuest } from '../api/client';
+import { createGuest, getRoles } from '../api/client';
 
 export default function Admin() {
   const { t } = useI18n();
+  const [roles, setRoles] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [partnerName, setPartnerName] = useState('');
+  const [selectedRoleName, setSelectedRoleName] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+
+  useEffect(() => {
+    getRoles()
+      .then((list) => {
+        setRoles(list);
+        if (list.length > 0) {
+          setSelectedRoleName((prev) => {
+            if (prev) return prev;
+            const guest = list.find((r) => r.name === 'GUEST');
+            return guest ? guest.name : list[0].name;
+          });
+        }
+      })
+      .catch(() => setRoles([]));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,12 +39,14 @@ export default function Admin() {
         password,
         displayName: displayName.trim() || null,
         partnerName: partnerName.trim() || null,
+        roles: selectedRoleName ? [selectedRoleName] : (roles.find((r) => r.name === 'GUEST') ? ['GUEST'] : roles.length ? [roles[0].name] : []),
       });
       setMessage({ type: 'success', text: t('admin.success') });
       setUsername('');
       setPassword('');
       setDisplayName('');
       setPartnerName('');
+      setSelectedRoleName(roles.find((r) => r.name === 'GUEST')?.name || roles[0]?.name || '');
     } catch (err) {
       setMessage({
         type: 'error',
@@ -81,6 +100,19 @@ export default function Admin() {
           value={partnerName}
           onChange={(e) => setPartnerName(e.target.value)}
         />
+        <label htmlFor="admin-role">{t('admin.roles')}</label>
+        <select
+          id="admin-role"
+          className="admin-role-select"
+          value={selectedRoleName}
+          onChange={(e) => setSelectedRoleName(e.target.value)}
+        >
+          {roles.map((role) => (
+            <option key={role.id} value={role.name}>
+              {t(`admin.role.${role.name}`)}
+            </option>
+          ))}
+        </select>
         <button type="submit" disabled={submitting}>
           {t('admin.submit')}
         </button>

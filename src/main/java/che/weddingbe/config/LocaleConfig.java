@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
@@ -29,6 +30,12 @@ public class LocaleConfig implements WebMvcConfigurer {
         resolver.setDefaultLocale(Locale.forLanguageTag("en"));
         resolver.setCookieMaxAge(Duration.ofDays(365));
         return resolver;
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // Redirect /wedding (no trailing slash) to /wedding/ so base URL is consistent
+        registry.addRedirectViewController("", "/");
     }
 
     @Override

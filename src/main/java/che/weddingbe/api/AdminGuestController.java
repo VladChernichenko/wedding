@@ -5,9 +5,11 @@ import che.weddingbe.guest.GuestRepository;
 import che.weddingbe.guest.RoleRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,13 @@ public class AdminGuestController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @GetMapping("/roles")
+    public List<RoleResponse> listRoles() {
+        return roleRepository.findAll().stream()
+                .map(r -> new RoleResponse(r.getId(), r.getName()))
+                .toList();
+    }
+
     @PostMapping("/guests")
     public ResponseEntity<CreateGuestResponse> createGuest(@Valid @RequestBody CreateGuestRequest request) {
         if (guestRepository.findByUsername(request.username()).isPresent()) {
@@ -37,7 +46,15 @@ public class AdminGuestController {
         guest.setPasswordHash(passwordEncoder.encode(request.password()));
         guest.setDisplayName(request.displayName() != null ? request.displayName().trim() : null);
         guest.setPartnerName(request.partnerName() != null ? request.partnerName().trim() : null);
-        roleRepository.findByName("GUEST").ifPresent(guest.getRoles()::add);
+        List<String> roleNames = request.roles() != null && !request.roles().isEmpty()
+                ? request.roles()
+                : List.of("GUEST");
+        for (String name : roleNames) {
+            roleRepository.findByName(name.trim().toUpperCase()).ifPresent(guest.getRoles()::add);
+        }
+        if (guest.getRoles().isEmpty()) {
+            roleRepository.findByName("GUEST").ifPresent(guest.getRoles()::add);
+        }
         guest = guestRepository.save(guest);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CreateGuestResponse(guest.getUsername(), guest.getDisplayName(), guest.getPartnerName()));
     }
@@ -46,8 +63,11 @@ public class AdminGuestController {
             @NotBlank(message = "Username is required") String username,
             @NotBlank(message = "Password is required") String password,
             String displayName,
-            String partnerName
+            String partnerName,
+            List<String> roles
     ) {}
 
     public record CreateGuestResponse(String username, String displayName, String partnerName) {}
+
+    public record RoleResponse(long id, String name) {}
 }

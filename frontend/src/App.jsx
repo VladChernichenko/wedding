@@ -30,7 +30,7 @@ function AppContent() {
       <UserBar user={user} />
       <div className={user ? 'user-bar-spacer' : ''} style={user ? { marginTop: '2.5rem' } : undefined}>
         <Routes>
-          <Route path="/" element={user ? <Invitation user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/" element={user ? <Invitation user={user} onRefreshUser={() => getMe().then(setUser)} /> : <Navigate to="/login" replace />} />
           <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
           <Route path="/admin" element={user?.admin ? <Admin /> : <Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />

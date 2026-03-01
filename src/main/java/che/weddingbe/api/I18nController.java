@@ -20,10 +20,12 @@ public class I18nController {
 
     private static final List<String> KEYS = Arrays.asList(
             "intro", "names", "request", "requestLine2", "date", "venue", "rsvp",
+            "rsvp.confirmI", "rsvp.confirmWe", "rsvp.confirmed", "rsvp.addChild", "rsvp.childName", "rsvp.children",
+            "countdown.days", "countdown.today", "countdown.passed",
             "welcome.alone", "welcome.withPartner",
             "userbar.loggedIn", "userbar.logout",
             "login.title", "login.intro", "login.username", "login.password", "login.submit", "login.error",
-            "admin.title", "admin.createGuest", "admin.username", "admin.password", "admin.displayName", "admin.partnerName", "admin.submit", "admin.success", "admin.error", "admin.backToInvitation", "welcome.adminLink"
+            "admin.title", "admin.createGuest", "admin.username", "admin.password", "admin.displayName", "admin.partnerName", "admin.roles", "admin.role.GUEST", "admin.role.ADMIN", "admin.role.AUTHOR", "admin.submit", "admin.success", "admin.error", "admin.backToInvitation", "welcome.adminLink"
     );
 
     private final MessageSource messageSource;
