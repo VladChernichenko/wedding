@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../contexts/I18nContext';
-import { createGuest, getRoles } from '../api/client';
+import { createGuest, getRoles, getUsers } from '../api/client';
 
 export default function Admin() {
   const { t } = useI18n();
+  const formRef = useRef(null);
   const [roles, setRoles] = useState([]);
+  const [users, setUsers] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [partnerName, setPartnerName] = useState('');
+  const [email, setEmail] = useState('');
   const [selectedRoleName, setSelectedRoleName] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -27,6 +30,7 @@ export default function Admin() {
         }
       })
       .catch(() => setRoles([]));
+    getUsers().then(setUsers).catch(() => setUsers([]));
   }, []);
 
   const handleSubmit = async (e) => {
@@ -39,6 +43,7 @@ export default function Admin() {
         password,
         displayName: displayName.trim() || null,
         partnerName: partnerName.trim() || null,
+        email: email.trim() || null,
         roles: selectedRoleName ? [selectedRoleName] : (roles.find((r) => r.name === 'GUEST') ? ['GUEST'] : roles.length ? [roles[0].name] : []),
       });
       setMessage({ type: 'success', text: t('admin.success') });
@@ -46,7 +51,9 @@ export default function Admin() {
       setPassword('');
       setDisplayName('');
       setPartnerName('');
+      setEmail('');
       setSelectedRoleName(roles.find((r) => r.name === 'GUEST')?.name || roles[0]?.name || '');
+      getUsers().then(setUsers).catch(() => {});
     } catch (err) {
       setMessage({
         type: 'error',
@@ -57,16 +64,65 @@ export default function Admin() {
     }
   };
 
+  const scrollToAddUser = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
     <main className="invitation login-box">
       <h1>{t('admin.title')}</h1>
-      <p className="intro">{t('admin.createGuest')}</p>
-      {message.text && (
-        <div className={message.type === 'success' ? 'login-success' : 'login-error'} role="alert">
-          {message.text}
+
+      <section className="admin-users-section" style={{ marginTop: '1rem' }}>
+        <div className="admin-users-header">
+          <h2>{t('admin.usersList')}</h2>
+          <button type="button" className="admin-add-user-btn" onClick={scrollToAddUser}>
+            {t('admin.addUser')}
+          </button>
         </div>
-      )}
-      <form onSubmit={handleSubmit}>
+        {users.length === 0 ? (
+          <p className="admin-users-empty">{t('admin.usersEmpty')}</p>
+        ) : (
+          <table className="admin-users-table">
+            <thead>
+              <tr>
+                <th>{t('admin.tableUser')}</th>
+                <th>{t('admin.tablePartner')}</th>
+                <th>{t('admin.tableRoles')}</th>
+                <th>{t('admin.tableConfirmed')}</th>
+                <th>{t('admin.tableTransfer')}</th>
+                <th>{t('admin.tableChildren')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.username}>
+                  <td>{u.displayName || u.username}</td>
+                  <td>{u.partnerName || '—'}</td>
+                  <td>
+                    <span className="admin-user-badges">
+                      {u.roles?.map((r) => (
+                        <span key={r} className="admin-user-role">{t(`admin.role.${r}`)}</span>
+                      ))}
+                    </span>
+                  </td>
+                  <td>{u.presenceConfirmed ? t('admin.presenceConfirmed') : u.presenceDeclined ? t('admin.presenceDeclined') : '—'}</td>
+                  <td>{u.transferNeed ? t('admin.yes') : '—'}</td>
+                  <td>{u.children?.length ? u.children.map((c) => c.age != null ? `${c.name} (${c.age})` : c.name).join(', ') : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+
+      <div ref={formRef}>
+        <p className="intro">{t('admin.createGuest')}</p>
+        {message.text && (
+          <div className={message.type === 'success' ? 'login-success' : 'login-error'} role="alert">
+            {message.text}
+          </div>
+        )}
+        <form onSubmit={handleSubmit}>
         <label htmlFor="admin-username">{t('admin.username')}</label>
         <input
           type="text"
@@ -100,6 +156,14 @@ export default function Admin() {
           value={partnerName}
           onChange={(e) => setPartnerName(e.target.value)}
         />
+        <label htmlFor="admin-email">{t('admin.email')}</label>
+        <input
+          type="email"
+          id="admin-email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+        />
         <label htmlFor="admin-role">{t('admin.roles')}</label>
         <select
           id="admin-role"
@@ -117,6 +181,8 @@ export default function Admin() {
           {t('admin.submit')}
         </button>
       </form>
+      </div>
+
       <p style={{ marginTop: '1.5rem' }}>
         <Link to="/">{t('admin.backToInvitation')}</Link>
       </p>

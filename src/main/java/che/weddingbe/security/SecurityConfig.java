@@ -35,11 +35,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf
                         // Skip CSRF for form login/logout, admin API, and me API (session cookie still required)
-                        .ignoringRequestMatchers("/login", "/logout", "/api/admin/**", "/api/me/**")
+                        .ignoringRequestMatchers("/login", "/logout", "/api/login", "/api/admin/**", "/api/me/**")
                 )
                 .addFilterBefore(loginRequestLoggingFilter(), org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/logout", "/admin", "/index.html", "/assets/**", "/styles.css", "/images/**", "/api/i18n", "/api/i18n/**", "/api/me", "/error").permitAll()
+                        .requestMatchers("/", "/login", "/logout", "/admin", "/rsvp", "/confirm-login", "/index.html", "/assets/**", "/styles.css", "/images/**", "/api/i18n", "/api/i18n/**", "/api/me", "/api/login", "/error").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

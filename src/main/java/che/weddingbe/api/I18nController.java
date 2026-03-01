@@ -20,12 +20,13 @@ public class I18nController {
 
     private static final List<String> KEYS = Arrays.asList(
             "intro", "names", "request", "requestLine2", "date", "venue", "rsvp",
-            "rsvp.confirmI", "rsvp.confirmWe", "rsvp.confirmed", "rsvp.addChild", "rsvp.childName", "rsvp.children",
+            "rsvp.confirmI", "rsvp.confirmWe", "rsvp.declineI", "rsvp.declineWe", "rsvp.confirmed", "rsvp.declined", "rsvp.addChild", "rsvp.deleteChild", "rsvp.childName", "rsvp.childAge", "rsvp.children", "rsvp.yearsOld", "rsvp.transferNeed",
+            "rsvp.respond", "rsvp.title", "rsvp.intro", "rsvp.emailOptional", "rsvp.emailPlaceholder", "rsvp.save", "rsvp.emailSaved", "rsvp.backToInvitation", "rsvp.notGuest",
             "countdown.days", "countdown.today", "countdown.passed",
             "welcome.alone", "welcome.withPartner",
             "userbar.loggedIn", "userbar.logout",
-            "login.title", "login.intro", "login.username", "login.password", "login.submit", "login.error",
-            "admin.title", "admin.createGuest", "admin.username", "admin.password", "admin.displayName", "admin.partnerName", "admin.roles", "admin.role.GUEST", "admin.role.ADMIN", "admin.role.AUTHOR", "admin.submit", "admin.success", "admin.error", "admin.backToInvitation", "welcome.adminLink"
+            "login.title", "login.intro", "login.username", "login.password", "login.submit", "login.error", "login.checkEmail",
+            "admin.title", "admin.createGuest", "admin.username", "admin.password", "admin.displayName", "admin.partnerName", "admin.email", "admin.roles", "admin.role.GUEST", "admin.role.ADMIN", "admin.role.AUTHOR", "admin.submit", "admin.success", "admin.error", "admin.backToInvitation", "admin.usersList", "admin.addUser", "admin.usersEmpty", "admin.presenceConfirmed", "admin.presenceDeclined", "admin.tableUser", "admin.tablePartner", "admin.tableRoles", "admin.tableConfirmed", "admin.tableTransfer", "admin.tableChildren", "admin.yes", "welcome.adminLink"
     );
 
     private final MessageSource messageSource;

@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN IF NOT EXISTS presence_declined_at TIMESTAMP NULL;

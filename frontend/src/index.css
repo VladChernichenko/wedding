@@ -6,3 +6,323 @@
   justify-content: center;
   padding: 2rem 1rem;
 }
+
+/* Admin: table of users with children */
+.admin-users-section { width: 100%; max-width: 100%; }
+.admin-users-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+.admin-users-header h2 { font-size: 1.1rem; margin: 0; }
+.admin-add-user-btn { padding: 0.4rem 0.8rem; font-size: 0.9rem; cursor: pointer; border-radius: 6px; border: 1px solid #888; background: #f5f5f5; }
+.admin-add-user-btn:hover { background: #e8e8e8; }
+.admin-users-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.admin-users-table th, .admin-users-table td { padding: 0.5rem 0.6rem; text-align: left; border: 1px solid #ddd; }
+.admin-users-table th { background: #f0f0f0; font-weight: 600; }
+.admin-users-table tbody tr:nth-child(even) { background: #fafafa; }
+.admin-user-badges { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.admin-user-role { font-size: 0.75rem; padding: 0.15rem 0.4rem; border-radius: 4px; background: #e8e8e8; color: #444; }
+.admin-users-empty { color: #666; font-style: italic; margin: 0; }
+
+/* ========== RSVP page: beautiful layout ========== */
+.rsvp-page {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.rsvp-page-card {
+  background: rgba(250, 248, 245, 0.97);
+  border-radius: 12px;
+  padding: 2rem 1.75rem;
+  box-shadow: 0 4px 24px rgba(107, 83, 68, 0.12), 0 1px 3px rgba(107, 83, 68, 0.08);
+  border: 1px solid rgba(139, 115, 85, 0.15);
+}
+
+.rsvp-page-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.rsvp-page-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #4a3f35;
+  letter-spacing: 0.02em;
+  margin: 0 0 0.5rem;
+}
+
+.rsvp-page-intro {
+  font-size: 0.95rem;
+  color: #6b5344;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.rsvp-page-divider {
+  width: 4rem;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(139, 115, 85, 0.4), transparent);
+  margin: 1.25rem auto 0;
+  border: none;
+}
+
+.rsvp-page-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.rsvp-section {
+  text-align: center;
+}
+
+.rsvp-section-email {
+  text-align: center;
+}
+.rsvp-email-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #6b5344;
+  margin-bottom: 0.35rem;
+}
+.rsvp-email-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.rsvp-email-input {
+  min-width: 12rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid rgba(107, 83, 68, 0.35);
+  border-radius: 6px;
+  background: #fff;
+  color: #4a3f35;
+  font-size: 0.95rem;
+}
+.rsvp-email-save {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid rgba(107, 83, 68, 0.4);
+  border-radius: 6px;
+  background: transparent;
+  color: #6b5344;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.rsvp-email-save:hover:not(:disabled) { background: rgba(139, 115, 85, 0.1); }
+.rsvp-email-save:disabled { opacity: 0.6; cursor: not-allowed; }
+.rsvp-email-message { font-size: 0.85rem; color: #5a4a3d; margin: 0.35rem 0 0; }
+
+.rsvp-section-confirm {
+  display: flex;
+  justify-content: center;
+}
+
+.rsvp-confirmed-block,
+.rsvp-declined-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rsvp-confirm-button {
+  padding: 0.65rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  background: #8b7355;
+  color: #faf8f5;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.rsvp-confirm-button:hover:not(:disabled) { background: #7a6549; }
+.rsvp-confirm-button:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.rsvp-decline-button {
+  padding: 0.65rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 2px solid rgba(107, 83, 68, 0.5);
+  border-radius: 8px;
+  background: transparent;
+  color: #6b5344;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.rsvp-decline-button:hover:not(:disabled) { border-color: #8b7355; color: #4a3f35; }
+.rsvp-decline-button:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.rsvp-confirmed,
+.rsvp-declined {
+  font-size: 0.95rem;
+  color: #5a4a3d;
+  margin: 0;
+}
+
+.rsvp-section-children .rsvp-children-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b5344;
+  margin: 0 0 0.75rem;
+}
+
+.rsvp-children-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  text-align: center;
+}
+.rsvp-child-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #5a4a3d;
+  padding: 0.35rem 0;
+}
+.rsvp-child-delete {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid rgba(107, 83, 68, 0.3);
+  border-radius: 4px;
+  background: transparent;
+  color: #6b5344;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.rsvp-child-delete:hover:not(:disabled) {
+  background: rgba(139, 115, 85, 0.15);
+  color: #4a3f35;
+}
+.rsvp-child-delete:disabled { opacity: 0.6; cursor: not-allowed; }
+.rsvp-child-age { color: #8b7355; font-size: 0.9em; }
+
+/* Add child form: centered, name + age in one row */
+.rsvp-add-child {
+  max-width: 100%;
+  margin: 0 auto;
+}
+.rsvp-add-child .rsvp-add-child-error {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+.rsvp-add-child-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 0.75rem;
+}
+.rsvp-add-child-label {
+  color: #6b5344;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+.rsvp-add-child-input {
+  flex: 1;
+  min-width: 5rem;
+  max-width: 10rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid rgba(107, 83, 68, 0.35);
+  border-radius: 6px;
+  background: #fff;
+  color: #4a3f35;
+  font-size: 0.95rem;
+}
+.rsvp-child-age-select {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid rgba(107, 83, 68, 0.35);
+  border-radius: 6px;
+  background: #fff;
+  color: #4a3f35;
+  min-width: 3.5rem;
+  font-size: 0.95rem;
+}
+.rsvp-add-child-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #8b7355;
+  color: #faf8f5;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.rsvp-add-child-btn:hover:not(:disabled) { background: #7a6549; }
+.rsvp-add-child-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Transfer: centered checkbox */
+.rsvp-section-transfer {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(107, 83, 68, 0.15);
+  display: flex;
+  justify-content: center;
+}
+.rsvp-transfer-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.rsvp-transfer-checkbox {
+  appearance: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid #8b7355;
+  border-radius: 3px;
+  background: #faf8f5;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.rsvp-transfer-checkbox:checked {
+  background: #8b7355;
+  border-color: #8b7355;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%23faf8f5' d='M10.28 2.28L3.99 8.57 1.71 6.29a1 1 0 00-1.42 1.42l3 3a1 1 0 001.41 0l7-7a1 1 0 10-1.41-1.42z'/%3E%3C/svg%3E");
+}
+.rsvp-transfer-checkbox:disabled { opacity: 0.6; cursor: not-allowed; }
+.rsvp-transfer-text { color: #5a4a3d; font-size: 0.95rem; }
+
+.rsvp-not-guest {
+  text-align: center;
+  color: #6b5344;
+  margin: 0;
+}
+
+.rsvp-page-footer {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(107, 83, 68, 0.12);
+  text-align: center;
+}
+.rsvp-back-link {
+  color: #8b7355;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.rsvp-back-link:hover { color: #7a6549; text-decoration: underline; }
+
+/* Login: check your email message */
+.login-email-sent {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: #d4edda;
+  color: #155724;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* Invitation page: RSVP link */
+.rsvp-link { color: #8b7355; font-weight: 600; text-decoration: underline; }
+.rsvp-link:hover { color: #7a6549; }

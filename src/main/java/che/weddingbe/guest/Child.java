@@ -28,4 +28,7 @@ public class Child {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = true)
+    private Integer age;
 }

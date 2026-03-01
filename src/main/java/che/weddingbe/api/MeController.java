@@ -12,7 +12,9 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,15 +41,20 @@ public class MeController {
                 .map(guest -> {
                     List<Child> childList = guest.getChildren() != null ? guest.getChildren() : List.of();
                     List<ChildDto> children = childList.stream()
-                            .map(c -> new ChildDto(c.getId(), c.getName()))
+                            .map(c -> new ChildDto(c.getId(), c.getName(), c.getAge()))
                             .toList();
+                    boolean transferNeed = Boolean.TRUE.equals(guest.getTransferNeeded());
+                    boolean presenceDeclined = guest.getPresenceDeclinedAt() != null;
                     return ResponseEntity.ok(new MeResponse(
                             guest.getUsername(),
                             guest.getDisplayName(),
                             guest.getPartnerName(),
+                            guest.getEmail(),
                             guest.hasRole("ADMIN"),
                             guest.hasRole("GUEST"),
                             guest.getPresenceConfirmedAt() != null,
+                            presenceDeclined,
+                            transferNeed,
                             children
                     ));
                 })
@@ -62,6 +69,53 @@ public class MeController {
         return guestRepository.findByUsername(user.getUsername())
                 .map(guest -> {
                     guest.setPresenceConfirmedAt(Instant.now());
+                    guest.setPresenceDeclinedAt(null);
+                    guestRepository.save(guest);
+                    return me(user);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/me/decline")
+    public ResponseEntity<MeResponse> declinePresence(@AuthenticationPrincipal UserDetails user) {
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return guestRepository.findByUsername(user.getUsername())
+                .map(guest -> {
+                    guest.setPresenceDeclinedAt(Instant.now());
+                    guest.setPresenceConfirmedAt(null);
+                    guestRepository.save(guest);
+                    return me(user);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/me/email")
+    public ResponseEntity<MeResponse> setEmail(@AuthenticationPrincipal UserDetails user,
+                                               @RequestBody SetEmailRequest request) {
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return guestRepository.findByUsername(user.getUsername())
+                .map(guest -> {
+                    String email = request.email();
+                    guest.setEmail(email != null && !email.isBlank() ? email.trim() : null);
+                    guestRepository.save(guest);
+                    return me(user);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/me/transfer")
+    public ResponseEntity<MeResponse> setTransferNeed(@AuthenticationPrincipal UserDetails user,
+                                                      @RequestBody SetTransferNeedRequest request) {
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return guestRepository.findByUsername(user.getUsername())
+                .map(guest -> {
+                    guest.setTransferNeeded(request.need() != null && request.need());
                     guestRepository.save(guest);
                     return me(user);
                 })
@@ -82,12 +136,13 @@ public class MeController {
                         Child child = new Child();
                         String name = request.name().trim();
                         child.setName(name);
+                        child.setAge(request.age());
                         guest.getChildren().add(child);
                         child.setUser(guest);
                         guestRepository.save(guest);
                         child = guest.getChildren().get(guest.getChildren().size() - 1);
-                        log.info("[ADD_CHILD] success: username='{}', childId={}, childName='{}'", user.getUsername(), child.getId(), child.getName());
-                        return ResponseEntity.ok(new ChildDto(child.getId(), child.getName()));
+                        log.info("[ADD_CHILD] success: username='{}', childId={}, childName='{}', age={}", user.getUsername(), child.getId(), child.getName(), child.getAge());
+                        return ResponseEntity.ok(new ChildDto(child.getId(), child.getName(), child.getAge()));
                     } catch (Exception e) {
                         log.error("[ADD_CHILD] failed: username='{}', childName='{}'", user.getUsername(), request.name(), e);
                         throw e;
@@ -99,10 +154,34 @@ public class MeController {
                 });
     }
 
-    public record MeResponse(String username, String displayName, String partnerName, boolean admin,
-                            boolean guest, boolean presenceConfirmed, List<ChildDto> children) {}
+    @DeleteMapping("/me/children/{childId}")
+    public ResponseEntity<?> deleteChild(@AuthenticationPrincipal UserDetails user,
+                                         @PathVariable Long childId) {
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return guestRepository.findByUsername(user.getUsername())
+                .map(guest -> {
+                    boolean removed = guest.getChildren() != null
+                            && guest.getChildren().removeIf(c -> c.getId().equals(childId));
+                    if (!removed) {
+                        return ResponseEntity.notFound().build();
+                    }
+                    guestRepository.save(guest);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-    public record ChildDto(long id, String name) {}
+    public record MeResponse(String username, String displayName, String partnerName, String email,
+                            boolean admin, boolean guest, boolean presenceConfirmed, boolean presenceDeclined,
+                            boolean transferNeed, List<ChildDto> children) {}
 
-    public record AddChildRequest(@NotBlank(message = "Name is required") String name) {}
+    public record SetEmailRequest(String email) {}
+
+    public record SetTransferNeedRequest(Boolean need) {}
+
+    public record ChildDto(long id, String name, Integer age) {}
+
+    public record AddChildRequest(@NotBlank(message = "Name is required") String name, Integer age) {}
 }

@@ -42,6 +42,14 @@ export default defineConfig({
           if (req.method === 'GET') return '/wedding/';
         },
       },
+      // GET /wedding/rsvp → serve SPA
+      '/wedding/rsvp': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        bypass(req) {
+          if (req.method === 'GET') return '/wedding/';
+        },
+      },
       '/wedding/styles.css': { target: 'http://localhost:8080', changeOrigin: true },
       '/wedding/images': { target: 'http://localhost:8080', changeOrigin: true },
     },

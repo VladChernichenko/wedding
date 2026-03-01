@@ -45,8 +45,23 @@ public class User {
     @Column(name = "partner_name")
     private String partnerName;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "login_confirm_token")
+    private String loginConfirmToken;
+
+    @Column(name = "login_confirm_expires_at")
+    private Instant loginConfirmExpiresAt;
+
     @Column(name = "presence_confirmed_at")
     private Instant presenceConfirmedAt;
+
+    @Column(name = "presence_declined_at")
+    private Instant presenceDeclinedAt;
+
+    @Column(name = "transfer_needed", nullable = false)
+    private Boolean transferNeeded = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Child> children = new ArrayList<>();

@@ -47,12 +47,66 @@ export async function confirmPresence() {
 }
 
 /**
- * Add a child (guest). Returns { id, name }.
+ * Decline presence (guest). Returns updated me response.
  */
-export async function addChild(name) {
+export async function declinePresence() {
+  const res = await fetchWithCsrf(`${BASE}/api/me/decline`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) throw new Error('Failed to decline');
+  return res.json();
+}
+
+/**
+ * Delete a child (guest). childId: number. Returns 204 on success.
+ */
+export async function deleteChild(childId) {
+  const res = await fetchWithCsrf(`${BASE}/api/me/children/${childId}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete child');
+}
+
+/**
+ * Set email (guest). Optional; pass null or '' to clear. Returns updated me response.
+ */
+export async function setEmail(email) {
+  const res = await fetchWithCsrf(`${BASE}/api/me/email`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email != null ? String(email).trim() || null : null }),
+  });
+  if (!res.ok) throw new Error('Failed to set email');
+  return res.json();
+}
+
+/**
+ * Set transfer need (guest). Returns updated me response.
+ */
+export async function setTransferNeed(need) {
+  const res = await fetchWithCsrf(`${BASE}/api/me/transfer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ need: !!need }),
+  });
+  if (!res.ok) throw new Error('Failed to set transfer need');
+  return res.json();
+}
+
+/**
+ * Add a child (guest). Returns { id, name, age }.
+ * age: number 0-13 or null/undefined for not specified.
+ */
+export async function addChild(name, age) {
   const url = `${BASE}/api/me/children`;
-  const body = JSON.stringify({ name: name.trim() });
-  console.log('[ADD_CHILD] POST', url, { name: name?.trim() });
+  const payload = { name: name.trim() };
+  if (age !== undefined && age !== null && age !== '') {
+    const n = Number(age);
+    if (!Number.isNaN(n) && n >= 0 && n <= 13) payload.age = n;
+  }
+  const body = JSON.stringify(payload);
+  console.log('[ADD_CHILD] POST', url, payload);
   const res = await fetchWithCsrf(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -69,21 +123,26 @@ export async function addChild(name) {
 }
 
 /**
- * Submit login form (application/x-www-form-urlencoded with _csrf).
+ * Submit login (form POST to /login). Spring Security form login creates the session.
+ * Success: 200 with body {} (no redirect). Failure: redirect to /login?error.
  */
 export async function login(username, password) {
   const url = `${BASE}/login`;
   const token = getCsrfToken();
-  const body = new URLSearchParams({ username, password });
-  if (token) body.set('_csrf', token);
-  console.log('[LOGIN] Sending POST', url, { username, hasPassword: !!password, hasCsrf: !!token, bodyLength: body.toString().length });
-  const res = await fetchWithCsrf(url, {
+  const params = new URLSearchParams();
+  params.set('username', username.trim());
+  params.set('password', password);
+  if (token) params.set('_csrf', token);
+  const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body.toString(),
+    body: params.toString(),
+    credentials: 'include',
   });
-  console.log('[LOGIN] Response:', res.status, res.statusText, 'url=', res.url, 'redirected=', res.redirected, 'ok=', res.ok);
-  return res;
+  // Success = 200 and JSON body (our custom handler). Failure = redirect to ?error or 302
+  const isSuccess = res.ok && !res.redirected;
+  const json = res.ok ? await res.json().catch(() => ({})) : {};
+  return { res, ok: isSuccess, json };
 }
 
 /**
@@ -110,6 +169,15 @@ export async function logout() {
 export async function getRoles() {
   const res = await fetch(`${BASE}/api/admin/roles`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to load roles');
+  return res.json();
+}
+
+/**
+ * List all users with children (admin only). Returns [{ username, displayName, partnerName, presenceConfirmed, roles, children }, ...].
+ */
+export async function getUsers() {
+  const res = await fetch(`${BASE}/api/admin/users`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to load users');
   return res.json();
 }
 

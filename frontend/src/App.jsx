@@ -4,6 +4,7 @@ import { useI18n } from './contexts/I18nContext';
 import { getMe } from './api/client';
 import UserBar from './components/UserBar';
 import Invitation from './pages/Invitation';
+import Rsvp from './pages/Rsvp';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 
@@ -30,7 +31,8 @@ function AppContent() {
       <UserBar user={user} />
       <div className={user ? 'user-bar-spacer' : ''} style={user ? { marginTop: '2.5rem' } : undefined}>
         <Routes>
-          <Route path="/" element={user ? <Invitation user={user} onRefreshUser={() => getMe().then(setUser)} /> : <Navigate to="/login" replace />} />
+          <Route path="/" element={user ? <Invitation user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/rsvp" element={user ? <Rsvp user={user} onRefreshUser={() => getMe().then(setUser)} /> : <Navigate to="/login" replace />} />
           <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
           <Route path="/admin" element={user?.admin ? <Admin /> : <Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />

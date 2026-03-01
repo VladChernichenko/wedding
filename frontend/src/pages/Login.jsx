@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useI18n } from '../contexts/I18nContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { login, BASE } from '../api/client';
 
 export default function Login() {
   const { t } = useI18n();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const hasError = searchParams.get('error') != null;
 
@@ -19,13 +18,9 @@ export default function Login() {
     e.preventDefault();
     setError('');
     setSubmitting(true);
-    console.log('[LOGIN] Submit: username=', username, 'passwordLength=', password?.length);
     try {
-      const res = await login(username, password);
-      const url = res.url || '';
-      console.log('[LOGIN] Result: res.ok=', res.ok, 'res.url=', url);
-      // Backend returns 200 on success (no redirect) so the session cookie is set on this response.
-      if (res.ok && !url.includes('error')) {
+      const { res, ok } = await login(username, password);
+      if (ok) {
         window.location.href = `${BASE}/`;
         return;
       }
