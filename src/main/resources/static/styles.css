@@ -1,0 +1,345 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --cream: #faf8f5;
+  --ivory: #f5f0e8;
+  --ink: #2c2a28;
+  --gold: #a67c52;
+  --gold-light: #c4a574;
+  --blush: #e8ddd4;
+}
+
+html {
+  font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--cream);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%, var(--blush) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(250, 248, 245, 0.88) 0%, rgba(245, 240, 232, 0.9) 100%),
+    url(images/wildflowers-bg.png);
+  background-size: 100% 100%, 100% 100%, cover;
+  background-position: 0 0, 0 0, center;
+  background-repeat: repeat, repeat, no-repeat;
+  color: var(--ink);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.invitation {
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.user-bar ~ .invitation {
+  margin-top: 2.5rem;  /* space below fixed user bar */
+}
+
+.welcome {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+.ornament {
+  font-size: 0.75rem;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  opacity: 0.85;
+}
+
+.ornament-top {
+  margin-bottom: 2.5rem;
+}
+
+.ornament-bottom {
+  margin-top: 2.5rem;
+}
+
+.intro {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.names {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 8vw, 3.75rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.request {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  opacity: 0.9;
+  line-height: 1.7;
+  margin-bottom: 2.25rem;
+}
+
+.date-block {
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--gold-light);
+  border-bottom: 1px solid var(--gold-light);
+  margin-bottom: 2rem;
+}
+
+.date,
+.year {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.year {
+  margin-top: 0.25rem;
+}
+
+.time {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.75rem;
+}
+
+.venue {
+  margin-bottom: 2rem;
+}
+
+.venue-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+.venue-address {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  opacity: 0.8;
+  margin-top: 0.35rem;
+}
+
+.rsvp {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+@media (min-width: 480px) {
+  .invitation {
+    padding: 0 1rem;
+  }
+
+  .names {
+    letter-spacing: 0.12em;
+  }
+}
+
+/* Login page */
+.login-box {
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.login-box .ornament-top {
+  margin-bottom: 1.5rem;
+}
+
+.login-box h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+
+.login-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.login-box label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.login-box input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  border: 1px solid var(--gold-light);
+  border-radius: 2px;
+  background: var(--ivory);
+  color: var(--ink);
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.login-box button {
+  margin-top: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  background: var(--gold);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: var(--gold-light);
+}
+
+.login-error {
+  font-size: 0.85rem;
+  color: #b54a4a;
+  margin-bottom: 0.5rem;
+}
+
+.login-box .ornament-bottom {
+  margin-top: 2rem;
+}
+
+/* User bar (logged in as + logout) */
+.user-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--ivory);
+  border-bottom: 1px solid var(--gold-light);
+  font-size: 0.8rem;
+  z-index: 10;
+}
+
+.user-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-bar-text {
+  color: var(--ink);
+  opacity: 0.9;
+}
+
+.user-bar-form {
+  margin: 0;
+}
+
+.user-bar-logout {
+  padding: 0.35rem 0.75rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid var(--gold-light);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.user-bar-logout:hover {
+  background: var(--blush);
+  border-color: var(--gold);
+}
+
+/* Language switcher */
+.lang-switcher {
+  display: flex;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.lang-switcher a {
+  color: var(--gold);
+  text-decoration: none;
+  padding: 0.35rem 0.6rem;
+  border-radius: 2px;
+  border: 1px solid var(--gold-light);
+  font-weight: 500;
+}
+
+.lang-switcher a:hover {
+  color: var(--ink);
+  background: var(--blush);
+  border-color: var(--gold);
+}
+
+.lang-switcher a.active {
+  color: var(--cream);
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.lang-switcher-login {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+}
