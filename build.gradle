@@ -1,0 +1,104 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'che'
+version = '0.0.1-SNAPSHOT'
+description = 'wedding-be'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-flyway'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.postgresql:postgresql'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-rest-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+def isNpmAvailable() {
+    try {
+        def p = Runtime.getRuntime().exec(['npm', '--version'])
+        p.waitFor()
+        return p.exitValue() == 0
+    } catch (IOException e) {
+        return false
+    }
+}
+
+tasks.register('npmInstall', Exec) {
+    group = 'frontend'
+    description = 'Install frontend dependencies (requires Node.js)'
+    workingDir file('frontend')
+    commandLine 'npm', 'install'
+    onlyIf { file('frontend/package.json').exists() && isNpmAvailable() }
+}
+
+tasks.register('buildFrontend', Exec) {
+    group = 'frontend'
+    description = 'Build React frontend'
+    dependsOn npmInstall
+    workingDir file('frontend')
+    commandLine 'npm', 'run', 'build'
+    onlyIf { file('frontend/package.json').exists() && isNpmAvailable() }
+}
+
+tasks.register('copyFrontend', Copy) {
+    group = 'frontend'
+    description = 'Copy React build into static resources'
+    dependsOn buildFrontend, processResources
+    from file('frontend/dist')
+    into layout.buildDirectory.dir('resources/main/static')
+    include 'index.html'
+    include 'assets/**'
+    onlyIf {
+        def distExists = file('frontend/dist/index.html').exists()
+        if (!distExists) {
+            logger.warn('Skipping copyFrontend: frontend/dist not found. Install Node.js (https://nodejs.org) and run the build again to include the React frontend.')
+        }
+        return distExists
+    }
+}
+
+tasks.named('bootJar').configure { dependsOn copyFrontend }
+tasks.named('jar').configure { dependsOn copyFrontend }
+
+tasks.register('bcryptHash', JavaExec) {
+    group = 'application'
+    description = 'Generate BCrypt hash for a password. Usage: ./gradlew bcryptHash -Ppassword=yourpassword'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'che.weddingbe.guest.BCryptHashGenerator'
+    jvmArgs '-Dfile.encoding=UTF-8'
+    if (project.hasProperty('password')) {
+        args project.findProperty('password')
+    }
+}

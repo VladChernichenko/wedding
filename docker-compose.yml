@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: wedding
+    ports:
+      - "5433:5432"   # 5433 on host to avoid conflict with local PostgreSQL on 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Mount the named volume to the data directory
+
+volumes:
+  pgdata: # Define the named volume
